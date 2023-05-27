@@ -5,7 +5,7 @@ namespace HostelManagement.DAL.Models
     public class Hostel
     {
         [Key]
-        public string HostelId { get; set; } = string.Empty;
+        public int HostelId { get; set; } 
 
         [Required]
         public int NoOfStudents { get; set; }

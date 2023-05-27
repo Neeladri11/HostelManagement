@@ -6,16 +6,16 @@ namespace HostelManagement.DAL.Models
     public class Room
     {
         [Key]
-        public string RoomId { get; set; } = string.Empty;
+        public int RoomId { get; set; } 
         
         [Required]
-        public string RoomStatus { get; set; } = string.Empty;
+        public string RoomStatus { get; set; } 
         
         [Required]
         public int FloorNo { get; set; }
         
         [Required] 
-        public string HostelId { get; set; } = string.Empty;
+        public int HostelId { get; set; } 
         [ForeignKey("HostelId")]
         public virtual Hostel Hostel { get; set; }
     }

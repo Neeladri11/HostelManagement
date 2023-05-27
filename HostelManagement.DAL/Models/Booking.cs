@@ -6,7 +6,7 @@ namespace HostelManagement.DAL.Models
     public class Booking
     {
         [Key]
-        public string BookingId { get; set; } = string.Empty;
+        public int BookingId { get; set; } 
 
         [Required]
         public DateTime BookingDate { get; set; }

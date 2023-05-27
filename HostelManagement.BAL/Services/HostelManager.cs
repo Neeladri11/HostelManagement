@@ -24,12 +24,20 @@ namespace HostelManagement.BAL.Services
                 else
                 {
                     var h = new Hostel();
-                    h.HostelId = hostel.HostelId;
+                    //h.HostelId = hostel.HostelId;
+                    h.NoOfStudents = hostel.NoOfStudents;
+                    h.NoOfRooms = hostel.NoOfRooms;
+                    h.NoOfAvailableRooms = hostel.NoOfAvailableRooms;
                     _da.Hostel.AddAsync(h);
                     _da.Save();
+                    return await Task.FromResult(true);
                 }
             }
-            return await Task.FromResult(true);
+            else
+            {
+                return false;
+            }
+
         }
 
         public async Task<IEnumerable<Hostel>> GetAllHostelsAsync()
@@ -37,7 +45,7 @@ namespace HostelManagement.BAL.Services
             return await _da.Hostel.GetAllAsync();
         }
 
-        public async Task<Hostel> GetHostelAsync(string HostelId)
+        public async Task<Hostel> GetHostelAsync(int HostelId)
         {
             return await _da.Hostel.GetFirstOrDefaultAsync(x=>x.HostelId == HostelId);
         }
@@ -45,6 +53,12 @@ namespace HostelManagement.BAL.Services
         public void UpdateHostel(Hostel hostel)
         {
             _da.Hostel.UpdateExisting(hostel);
+            _da.Save();
+        }
+
+        public void DeleteHostel(Hostel hostel)
+        {
+            _da.Hostel.Remove(hostel);
             _da.Save();
         }
     }

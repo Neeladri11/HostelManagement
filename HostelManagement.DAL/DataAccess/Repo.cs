@@ -9,7 +9,7 @@ namespace HostelManagement.DAL.DataAccess
     {
         private readonly ApplicationDbContext _db;
 
-        internal DbSet<T> DbSet;
+        public DbSet<T> DbSet { get; set; }
 
         public Repo(ApplicationDbContext db)
         {
@@ -45,6 +45,7 @@ namespace HostelManagement.DAL.DataAccess
         public void Remove(T entity)
         {
             DbSet.Remove(entity);
+            _db.SaveChanges();
         }
 
         public void RemoveRange(IEnumerable<T> entities)
@@ -55,6 +56,7 @@ namespace HostelManagement.DAL.DataAccess
         public void UpdateExisting(T entity)
         {
             DbSet.Update(entity);
+            _db.SaveChanges();
         }
     }
 }

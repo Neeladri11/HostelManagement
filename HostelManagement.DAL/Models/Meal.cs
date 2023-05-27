@@ -9,7 +9,7 @@ namespace HostelManagement.DAL.Models
         public int MealId { get; set; }
 
         [Required]
-        public string MealType { get; set; } = string.Empty;
+        public string MealType { get; set; } 
 
         [Required]
         public int StudentId { get; set; }

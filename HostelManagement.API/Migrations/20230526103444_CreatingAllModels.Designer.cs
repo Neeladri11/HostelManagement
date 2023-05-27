@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HostelManagement.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230521211123_Trial2")]
-    partial class Trial2
+    [Migration("20230526103444_CreatingAllModels")]
+    partial class CreatingAllModels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,11 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Booking", b =>
                 {
-                    b.Property<string>("BookingId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("BookingId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
 
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
@@ -48,8 +51,11 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Hostel", b =>
                 {
-                    b.Property<string>("HostelId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("HostelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HostelId"));
 
                     b.Property<int>("NoOfAvailableRooms")
                         .HasColumnType("int");
@@ -89,16 +95,18 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Payment", b =>
                 {
-                    b.Property<string>("PaymentId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(15, 2)
                         .HasColumnType("decimal(15,2)");
 
-                    b.Property<string>("BookingId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ModeOfPayment")
                         .IsRequired()
@@ -117,15 +125,17 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Room", b =>
                 {
-                    b.Property<string>("RoomId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoomId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"));
 
                     b.Property<int>("FloorNo")
                         .HasColumnType("int");
 
-                    b.Property<string>("HostelId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("HostelId")
+                        .HasColumnType("int");
 
                     b.Property<string>("RoomStatus")
                         .IsRequired()
@@ -165,19 +175,20 @@ namespace HostelManagement.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("LaundryServices")
-                        .HasColumnType("bit");
+                    b.Property<string>("LaundryServices")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("MealServices")
-                        .HasColumnType("bit");
+                    b.Property<string>("MealServices")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoomId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("RoomId")
+                        .HasColumnType("int");
 
                     b.Property<string>("StudentName")
                         .IsRequired()
