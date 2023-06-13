@@ -6,7 +6,7 @@ namespace HostelManagement.DAL.Models
     public class Student
     {
         [Key]
-        public int StudentId { get; set; }
+        public int Id { get; set; }
         [Required]
         public string StudentName { get; set; } 
 
@@ -36,10 +36,14 @@ namespace HostelManagement.DAL.Models
         [Required]
         public string LaundryServices { get; set; }
 
+        //Foreign Key
         [Required]
         public int RoomId { get; set; } 
-        [ForeignKey("RoomId")]
-        public virtual Room Room { get; set; }
+        
+        //Navigation properties
+        public virtual Room rooms { get; set; }
+        public virtual ICollection<Meal> meals { get; set; }
+        public virtual ICollection<Booking> bookings { get; set; }
 
     }
 }

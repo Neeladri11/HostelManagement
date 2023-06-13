@@ -12,24 +12,31 @@ namespace HostelManagement.BAL.Services
             _da = da;
         }
 
-        public async Task<bool> AddStudent(Student student)
+        public async Task<int> AddStudent(Student student)
         {
+            IEnumerable<Room> r = await _da.Room.GetAllAsync();
             if (student != null)
             {
                 IEnumerable<Student> students = await _da.Student.GetAllAsync();
-                if (students.Any(x => x.StudentId.Equals(student.StudentId)))
+                if (students.Any(x => x.Id.Equals(student.Id)))
                 {
-                    return await Task.FromResult(false);
+                    return await Task.FromResult(0);
+                }
+                else if (!(r.Any(x => x.Id.Equals(student.RoomId))))
+                {
+                    return await Task.FromResult(1);
                 }
                 else
                 {
-                    var stud = new Student();
-                    stud.StudentId = student.StudentId;
-                    _da.Student.AddAsync(stud);
+                    _da.Student.AddAsync(student);
                     _da.Save();
+                    return await Task.FromResult(2);
                 }
             }
-            return await Task.FromResult(true);
+            else
+            {
+                return await Task.FromResult(-1);
+            }
         }
 
         public async Task<IEnumerable<Student>> GetAllStudentsAsync()
@@ -37,9 +44,9 @@ namespace HostelManagement.BAL.Services
             return await _da.Student.GetAllAsync();
         }
 
-        public async Task<Student> GetStudentAsync(int StudentId)
+        public async Task<Student> GetStudentAsync(int id)
         {
-            return await _da.Student.GetFirstOrDefaultAsync(x => x.StudentId == StudentId);
+            return await _da.Student.GetFirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void UpdateStudent(Student student)

@@ -13,6 +13,7 @@ namespace HostelManagement.DAL.DataAccess.Interface
         void Save();
     }
 
+    //Individual Model Repos
     public interface IHostelRepo : IRepo<Hostel> { }
     public interface IRoomRepo : IRepo<Room> { }
     public interface IStudentRepo : IRepo<Student> { }

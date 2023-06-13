@@ -6,7 +6,7 @@ namespace HostelManagement.DAL.Models
     public class Payment
     {
         [Key]
-        public int PaymentId { get; set; } 
+        public int Id { get; set; } 
         
         [Required]
         public decimal Amount { get; set; }
@@ -17,10 +17,12 @@ namespace HostelManagement.DAL.Models
         [Required]
         public string Status { get; set; } 
 
+        //Foreign key
         [Required]
-        public int BookingId { get; set; } 
-        [ForeignKey("BookingId")]
-        public virtual Booking Booking { get; set; }
+        public int BookingId { get; set; }
+
+        //Navigation property
+        public virtual Booking bookings { get; set; }
 
     }
 }

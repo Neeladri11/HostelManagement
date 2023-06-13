@@ -12,24 +12,31 @@ namespace HostelManagement.BAL.Services
             _da = da;
         }
 
-        public async Task<bool> AddPayment(Payment payment)
+        public async Task<int> AddPayment(Payment payment)
         {
+            IEnumerable<Booking> b = await _da.Booking.GetAllAsync();
             if (payment != null)
             {
                 IEnumerable<Payment> payments = await _da.Payment.GetAllAsync();
-                if (payments.Any(x => x.PaymentId.Equals(payment.PaymentId)))
+                if (payments.Any(x => x.Id.Equals(payment.Id)))
                 {
-                    return await Task.FromResult(false);
+                    return await Task.FromResult(0);
+                }
+                else if (!(b.Any(x => x.Id.Equals(payment.BookingId))))
+                {
+                    return await Task.FromResult(1);
                 }
                 else
                 {
-                    var p = new Payment();
-                    p.PaymentId = payment.PaymentId;
-                    _da.Payment.AddAsync(p);
+                    _da.Payment.AddAsync(payment);
                     _da.Save();
+                    return await Task.FromResult(2);
                 }
             }
-            return await Task.FromResult(true);
+            else
+            {
+                return await Task.FromResult(-1);
+            }
         }
 
         public async Task<IEnumerable<Payment>> GetAllPaymentsAsync()
@@ -39,7 +46,7 @@ namespace HostelManagement.BAL.Services
 
         public async Task<Payment> GetPaymentAsync(int id)
         {
-            return await _da.Payment.GetFirstOrDefaultAsync(x => x.PaymentId == id);
+            return await _da.Payment.GetFirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void UpdatePayment(Payment payment)

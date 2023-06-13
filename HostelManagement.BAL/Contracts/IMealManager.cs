@@ -6,7 +6,7 @@ namespace HostelManagement.BAL.Contracts
     {
         Task<IEnumerable<Meal>> GetAllMealsAsync();
         Task<Meal> GetMealAsync(int id);
-        Task<bool> AddMeal(Meal meal);
+        Task<int> AddMeal(Meal meal);
         void UpdateMeal(Meal meal);
         void DeleteMeal(Meal meal);
     }

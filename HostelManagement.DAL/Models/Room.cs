@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HostelManagement.DAL.Models
 {
     public class Room
     {
         [Key]
-        public int RoomId { get; set; } 
+        public int Id { get; set; } 
         
         [Required]
         public string RoomStatus { get; set; } 
@@ -14,9 +13,13 @@ namespace HostelManagement.DAL.Models
         [Required]
         public int FloorNo { get; set; }
         
+        //Foreign Key
         [Required] 
         public int HostelId { get; set; } 
-        [ForeignKey("HostelId")]
-        public virtual Hostel Hostel { get; set; }
+
+        //Navigation properties
+        public virtual Hostel hostels { get; set; }
+        public virtual ICollection<Student> students { get; set; }
+
     }
 }

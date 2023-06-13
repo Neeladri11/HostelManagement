@@ -6,7 +6,7 @@ namespace HostelManagement.BAL.Contracts
     {
         Task<IEnumerable<Payment>> GetAllPaymentsAsync();
         Task<Payment> GetPaymentAsync(int id);
-        Task<bool> AddPayment(Payment payment);
+        Task<int> AddPayment(Payment payment);
         void UpdatePayment(Payment payment);
         void DeletePayment(Payment payment);
     }

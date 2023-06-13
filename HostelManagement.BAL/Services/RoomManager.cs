@@ -12,30 +12,35 @@ namespace HostelManagement.BAL.Services
             _da = da;
         }
 
-        public async Task<bool> AddRoom(Room room)
+        public async Task<int> AddRoom(Room room)
         {
+            IEnumerable<Hostel> h = await _da.Hostel.GetAllAsync();
             if (room != null)
             {
                 IEnumerable<Room> rooms = await _da.Room.GetAllAsync();
-                if (rooms.Any(x => x.RoomId.Equals(room.RoomId)))
+                if (rooms.Any(x => x.Id.Equals(room.Id)))
                 {
-                    return await Task.FromResult(false);
+                    return await Task.FromResult(0);
+                }
+                else if (!(h.Any(x=>x.Id.Equals(room.HostelId))))
+                {
+                    return await Task.FromResult(1);
                 }
                 else
                 {
-                    var r = new Room();
-                    // r.RoomId = room.RoomId;
-                    r.RoomStatus = room.RoomStatus;
-                    r.FloorNo = room.FloorNo;
-                    r.HostelId = room.HostelId;
-                    _da.Room.AddAsync(r);
+                    //var r = new Room();
+                    //r.RoomId = room.RoomId;
+                    //r.RoomStatus = room.RoomStatus;
+                    //r.FloorNo = room.FloorNo;
+                    //r.HostelId = room.HostelId;
+                    _da.Room.AddAsync(room);
                     _da.Save();
-                    return await Task.FromResult(true);
+                    return await Task.FromResult(2);
                 }
             }
             else
             {
-                return false;
+                return await Task.FromResult(-1);
             }           
         }
 
@@ -44,9 +49,9 @@ namespace HostelManagement.BAL.Services
             return await _da.Room.GetAllAsync();
         }
 
-        public async Task<Room> GetRoomAsync(int RoomId)
+        public async Task<Room> GetRoomAsync(int id)
         {
-            return await _da.Room.GetFirstOrDefaultAsync(x => x.RoomId == RoomId);
+            return await _da.Room.GetFirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void UpdateRoom(Room room)

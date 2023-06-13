@@ -1,5 +1,7 @@
-﻿using HostelManagement.BAL.Contracts;
+﻿using AutoMapper;
+using HostelManagement.BAL.Contracts;
 using HostelManagement.DAL.Models;
+using HostelManagement.DAL.View_Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HostelManagement.API.Controllers
@@ -10,10 +12,12 @@ namespace HostelManagement.API.Controllers
     {
         private readonly ILogger<PaymentController> _logger;
         private readonly IPaymentManager _pm;
-        public PaymentController(IPaymentManager pm, ILogger<PaymentController> logger)
+        private readonly IMapper _mapper;
+        public PaymentController(IMapper mapper, IPaymentManager pm, ILogger<PaymentController> logger)
         {
             _pm = pm; ;
             _logger = logger;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -21,33 +25,45 @@ namespace HostelManagement.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<Payment>> GetAllPayments()
+        public async Task<IEnumerable<PaymentVM>> GetAllPayments()
         {
             _logger.LogInformation("GetAllPayments method is called at " + DateTime.Now);
-            return await _pm.GetAllPaymentsAsync();
+            IEnumerable<Payment> payments = await _pm.GetAllPaymentsAsync();
+            var pvmList = payments.Select(payments => _mapper.Map<PaymentVM>(payments));
+            return pvmList;
         }
 
         [HttpGet("{id}")]
-        public async Task<Payment> GetPayment(int id)
+        public async Task<PaymentVM> GetPayment(int id)
         {
             _logger.LogInformation("GetPayment method is called at " + DateTime.Now);
-            return await _pm.GetPaymentAsync(id);
+            
+            Payment payment = await _pm.GetPaymentAsync(id);
+            var pvm = _mapper.Map<PaymentVM>(payment);
+            return pvm;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPayment(Payment payment)
+        public async Task<IActionResult> AddPayment(PaymentVM pvm)
         {
             _logger.LogInformation("AddPayment method is called at " + DateTime.Now);
+            
             try
             {
-                if (payment == null)
+                if (pvm == null)
                     return BadRequest();
                 else
                 {
-                    if (await _pm.AddPayment(payment))
-                        return StatusCode(StatusCodes.Status201Created, "New payment is created");
+                    Payment payment = _mapper.Map<Payment>(pvm);
+                    var check = await _pm.AddPayment(payment);
+                    if (check == 0)
+                        return StatusCode(StatusCodes.Status400BadRequest, "Payment already exists");
+                    else if (check == 1)
+                        return StatusCode(StatusCodes.Status400BadRequest, "Foreign key values are not correct");
+                    else if (check == -1)
+                        return StatusCode(StatusCodes.Status400BadRequest, "The Payment object entered is empty");
                     else
-                        return StatusCode(StatusCodes.Status400BadRequest, "Payment is already available");
+                        return StatusCode(StatusCodes.Status201Created, "New Payment is created");
                 }
             }
             catch (Exception ex)
@@ -58,23 +74,24 @@ namespace HostelManagement.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePayment(int id, [FromBody] Payment payment)
+        public async Task<IActionResult> UpdatePayment(int id, [FromBody] PaymentVM pvm)
         {
             _logger.LogInformation("UpdateHostel method is called at " + DateTime.Now);
+            
             try
             {
-                if (payment == null)
+                if (pvm == null)
                     return BadRequest();
                 else
                 {
                     Payment exPayment = await _pm.GetPaymentAsync(id);
-                    if (exPayment != null)
+                    if (exPayment == null)
                     {
-                        exPayment.PaymentId = payment.PaymentId;
-                        _pm.UpdatePayment(exPayment);
-                        return Ok("Payment is updated");
+                        return NotFound("Id does not exist");
                     }
-                    return NotFound();
+                    Payment payment = _mapper.Map<PaymentVM, Payment>(pvm, exPayment);
+                    _pm.UpdatePayment(payment);
+                    return Ok("Payment is updated");
                 }
             }
             catch (Exception ex)

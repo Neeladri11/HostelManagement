@@ -24,11 +24,11 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Booking", b =>
                 {
-                    b.Property<int>("BookingId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
@@ -39,7 +39,7 @@ namespace HostelManagement.API.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.HasKey("BookingId");
+                    b.HasKey("Id");
 
                     b.HasIndex("StudentId");
 
@@ -48,11 +48,11 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Hostel", b =>
                 {
-                    b.Property<int>("HostelId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HostelId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("NoOfAvailableRooms")
                         .HasColumnType("int");
@@ -63,18 +63,18 @@ namespace HostelManagement.API.Migrations
                     b.Property<int>("NoOfStudents")
                         .HasColumnType("int");
 
-                    b.HasKey("HostelId");
+                    b.HasKey("Id");
 
-                    b.ToTable("Hostel_Details");
+                    b.ToTable("Hostels");
                 });
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Meal", b =>
                 {
-                    b.Property<int>("MealId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MealId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("MealType")
                         .IsRequired()
@@ -83,20 +83,20 @@ namespace HostelManagement.API.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.HasKey("MealId");
+                    b.HasKey("Id");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Meal_Details");
+                    b.ToTable("Meals");
                 });
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Payment", b =>
                 {
-                    b.Property<int>("PaymentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(15, 2)
@@ -113,7 +113,7 @@ namespace HostelManagement.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PaymentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
@@ -122,11 +122,11 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Room", b =>
                 {
-                    b.Property<int>("RoomId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoomId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("FloorNo")
                         .HasColumnType("int");
@@ -138,7 +138,7 @@ namespace HostelManagement.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RoomId");
+                    b.HasKey("Id");
 
                     b.HasIndex("HostelId");
 
@@ -147,11 +147,11 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Student", b =>
                 {
-                    b.Property<int>("StudentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -191,7 +191,7 @@ namespace HostelManagement.API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("StudentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("RoomId");
 
@@ -200,57 +200,79 @@ namespace HostelManagement.API.Migrations
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Booking", b =>
                 {
-                    b.HasOne("HostelManagement.DAL.Models.Student", "Student")
-                        .WithMany()
+                    b.HasOne("HostelManagement.DAL.Models.Student", "students")
+                        .WithMany("bookings")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Student");
+                    b.Navigation("students");
                 });
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Meal", b =>
                 {
-                    b.HasOne("HostelManagement.DAL.Models.Student", "Student")
-                        .WithMany()
+                    b.HasOne("HostelManagement.DAL.Models.Student", "students")
+                        .WithMany("meals")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Student");
+                    b.Navigation("students");
                 });
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Payment", b =>
                 {
-                    b.HasOne("HostelManagement.DAL.Models.Booking", "Booking")
-                        .WithMany()
+                    b.HasOne("HostelManagement.DAL.Models.Booking", "bookings")
+                        .WithMany("payments")
                         .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Booking");
+                    b.Navigation("bookings");
                 });
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Room", b =>
                 {
-                    b.HasOne("HostelManagement.DAL.Models.Hostel", "Hostel")
-                        .WithMany()
+                    b.HasOne("HostelManagement.DAL.Models.Hostel", "hostels")
+                        .WithMany("rooms")
                         .HasForeignKey("HostelId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Hostel");
+                    b.Navigation("hostels");
                 });
 
             modelBuilder.Entity("HostelManagement.DAL.Models.Student", b =>
                 {
-                    b.HasOne("HostelManagement.DAL.Models.Room", "Room")
-                        .WithMany()
+                    b.HasOne("HostelManagement.DAL.Models.Room", "rooms")
+                        .WithMany("students")
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Room");
+                    b.Navigation("rooms");
+                });
+
+            modelBuilder.Entity("HostelManagement.DAL.Models.Booking", b =>
+                {
+                    b.Navigation("payments");
+                });
+
+            modelBuilder.Entity("HostelManagement.DAL.Models.Hostel", b =>
+                {
+                    b.Navigation("rooms");
+                });
+
+            modelBuilder.Entity("HostelManagement.DAL.Models.Room", b =>
+                {
+                    b.Navigation("students");
+                });
+
+            modelBuilder.Entity("HostelManagement.DAL.Models.Student", b =>
+                {
+                    b.Navigation("bookings");
+
+                    b.Navigation("meals");
                 });
 #pragma warning restore 612, 618
         }

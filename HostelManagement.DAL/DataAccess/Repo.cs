@@ -20,6 +20,7 @@ namespace HostelManagement.DAL.DataAccess
         public void AddAsync(T entity)
         {
             DbSet.AddAsync(entity);
+            _db.SaveChanges();
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()

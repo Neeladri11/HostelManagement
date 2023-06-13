@@ -6,7 +6,7 @@ namespace HostelManagement.DAL.Models
     public class Booking
     {
         [Key]
-        public int BookingId { get; set; } 
+        public int Id { get; set; } 
 
         [Required]
         public DateTime BookingDate { get; set; }
@@ -14,10 +14,13 @@ namespace HostelManagement.DAL.Models
         [Required]
         public int DurationOfStay { get; set; }
 
+        //Foreign key
         [Required]
         public int StudentId { get; set; }
-        [ForeignKey("StudentId")]
-        public virtual Student Student { get; set; }
+
+        //Navigation properties
+        public virtual Student students { get; set; }
+        public virtual ICollection<Payment> payments { get; set; }
 
     }
 }

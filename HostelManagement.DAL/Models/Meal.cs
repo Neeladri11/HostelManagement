@@ -6,14 +6,16 @@ namespace HostelManagement.DAL.Models
     public class Meal
     {
         [Key]
-        public int MealId { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        public string MealType { get; set; } 
+        public string MealType { get; set; }
 
+        //Foreign Key
         [Required]
         public int StudentId { get; set; }
-        [ForeignKey("StudentId")]
-        public virtual Student Student { get; set; }
+        
+        //Navigation property
+        public virtual Student students { get; set; }
     }
 }

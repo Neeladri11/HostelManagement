@@ -6,16 +6,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HostelManagement.API.Migrations
 {
     /// <inheritdoc />
-    public partial class CreatingAllModels : Migration
+    public partial class @new : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Hostel_Details",
+                name: "Hostels",
                 columns: table => new
                 {
-                    HostelId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NoOfStudents = table.Column<int>(type: "int", nullable: false),
                     NoOfRooms = table.Column<int>(type: "int", nullable: false),
@@ -23,14 +23,14 @@ namespace HostelManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Hostel_Details", x => x.HostelId);
+                    table.PrimaryKey("PK_Hostels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
-                    RoomId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoomStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FloorNo = table.Column<int>(type: "int", nullable: false),
@@ -38,20 +38,19 @@ namespace HostelManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Rooms", x => x.RoomId);
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Rooms_Hostel_Details_HostelId",
+                        name: "FK_Rooms_Hostels_HostelId",
                         column: x => x.HostelId,
-                        principalTable: "Hostel_Details",
-                        principalColumn: "HostelId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Hostels",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Students",
                 columns: table => new
                 {
-                    StudentId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -66,20 +65,19 @@ namespace HostelManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Students", x => x.StudentId);
+                    table.PrimaryKey("PK_Students", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Students_Rooms_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Rooms",
-                        principalColumn: "RoomId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Bookings",
                 columns: table => new
                 {
-                    BookingId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DurationOfStay = table.Column<int>(type: "int", nullable: false),
@@ -87,40 +85,38 @@ namespace HostelManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bookings", x => x.BookingId);
+                    table.PrimaryKey("PK_Bookings", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Bookings_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
-                        principalColumn: "StudentId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Meal_Details",
+                name: "Meals",
                 columns: table => new
                 {
-                    MealId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MealType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StudentId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Meal_Details", x => x.MealId);
+                    table.PrimaryKey("PK_Meals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Meal_Details_Students_StudentId",
+                        name: "FK_Meals_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
-                        principalColumn: "StudentId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Payments",
                 columns: table => new
                 {
-                    PaymentId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Amount = table.Column<decimal>(type: "decimal(15,2)", precision: 15, scale: 2, nullable: false),
                     ModeOfPayment = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -129,13 +125,12 @@ namespace HostelManagement.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payments", x => x.PaymentId);
+                    table.PrimaryKey("PK_Payments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Payments_Bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Bookings",
-                        principalColumn: "BookingId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -144,8 +139,8 @@ namespace HostelManagement.API.Migrations
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Meal_Details_StudentId",
-                table: "Meal_Details",
+                name: "IX_Meals_StudentId",
+                table: "Meals",
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
@@ -168,7 +163,7 @@ namespace HostelManagement.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Meal_Details");
+                name: "Meals");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -183,7 +178,7 @@ namespace HostelManagement.API.Migrations
                 name: "Rooms");
 
             migrationBuilder.DropTable(
-                name: "Hostel_Details");
+                name: "Hostels");
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace HostelManagement.DAL.Models
+namespace HostelManagement.DAL.View_Models
 {
-    public class Hostel
+    public class HostelVM
     {
-        [Key]
-        public int Id { get; set; } 
+        [Required]
+        public int Id { get; set; }
 
         [Required]
         public int NoOfStudents { get; set; }
@@ -15,9 +15,5 @@ namespace HostelManagement.DAL.Models
 
         [Required]
         public int NoOfAvailableRooms { get; set; }
-
-        //Navigation property
-        public virtual ICollection<Room> rooms { get; set; }
-
     }
 }

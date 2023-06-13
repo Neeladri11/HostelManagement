@@ -12,24 +12,31 @@ namespace HostelManagement.BAL.Services
             _da = da;
         }
 
-        public async Task<bool> AddBooking(Booking booking)
+        public async Task<int> AddBooking(Booking booking)
         {
+            IEnumerable<Student> s = await _da.Student.GetAllAsync();
             if (booking != null)
             {
                 IEnumerable<Booking> bookings = await _da.Booking.GetAllAsync();
-                if (bookings.Any(x => x.BookingId.Equals(booking.BookingId)))
+                if (bookings.Any(x => x.Id.Equals(booking.Id)))
                 {
-                    return await Task.FromResult(false);
+                    return await Task.FromResult(0);
+                }
+                else if (!(s.Any(x => x.Id.Equals(booking.StudentId))))
+                {
+                    return await Task.FromResult(1);
                 }
                 else
                 {
-                    var bk = new Booking();
-                    bk.BookingId = booking.BookingId;
-                    _da.Booking.AddAsync(bk);
+                    _da.Booking.AddAsync(booking);
                     _da.Save();
+                    return await Task.FromResult(2);
                 }
             }
-            return await Task.FromResult(true);
+            else
+            {
+                return await Task.FromResult(-1);
+            }
         }
 
         public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
@@ -37,9 +44,9 @@ namespace HostelManagement.BAL.Services
             return await _da.Booking.GetAllAsync();
         }
 
-        public async Task<Booking> GetBookingAsync(int BookingId)
+        public async Task<Booking> GetBookingAsync(int id)
         {
-            return await _da.Booking.GetFirstOrDefaultAsync(x => x.BookingId == BookingId);
+            return await _da.Booking.GetFirstOrDefaultAsync(x => x.Id == id);
 
         }
 
@@ -54,5 +61,5 @@ namespace HostelManagement.BAL.Services
             _da.Booking.Remove(booking);
             _da.Save();
         }
-    }
+    }  
 }

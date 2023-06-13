@@ -12,24 +12,31 @@ namespace HostelManagement.BAL.Services
             _da = da;
         }
 
-        public async Task<bool> AddMeal(Meal meal)
+        public async Task<int> AddMeal(Meal meal)
         {
+            IEnumerable<Student> s = await _da.Student.GetAllAsync();
             if (meal != null)
             {
                 IEnumerable<Meal> meals = await _da.Meal.GetAllAsync();
-                if (meals.Any(x => x.MealId.Equals(meal.MealId)))
+                if (meals.Any(x => x.Id.Equals(meal.Id)))
                 {
-                    return await Task.FromResult(false);
+                    return await Task.FromResult(0);
+                }
+                else if (!(s.Any(x => x.Id.Equals(meal.StudentId))))
+                {
+                    return await Task.FromResult(1);
                 }
                 else
                 {
-                    var m = new Meal();
-                    m.MealId = meal.MealId;
-                    _da.Meal.AddAsync(m);
+                    _da.Meal.AddAsync(meal);
                     _da.Save();
+                    return await Task.FromResult(2);
                 }
             }
-            return await Task.FromResult(true);
+            else
+            {
+                return await Task.FromResult(-1);
+            }
         }
 
         public async Task<IEnumerable<Meal>> GetAllMealsAsync()
@@ -37,9 +44,9 @@ namespace HostelManagement.BAL.Services
             return await _da.Meal.GetAllAsync();
         }
 
-        public async Task<Meal> GetMealAsync(int MealId)
+        public async Task<Meal> GetMealAsync(int id)
         {
-            return await _da.Meal.GetFirstOrDefaultAsync(x => x.MealId == MealId);
+            return await _da.Meal.GetFirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void UpdateMeal(Meal meal)

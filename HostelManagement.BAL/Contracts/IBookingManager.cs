@@ -6,7 +6,7 @@ namespace HostelManagement.BAL.Contracts
     {
             Task<IEnumerable<Booking>> GetAllBookingsAsync();
             Task<Booking> GetBookingAsync(int id);
-            Task<bool> AddBooking(Booking booking);
+            Task<int> AddBooking(Booking booking);
             void UpdateBooking(Booking booking);
             void DeleteBooking(Booking booking);
     }

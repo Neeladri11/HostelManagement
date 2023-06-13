@@ -1,5 +1,7 @@
-﻿using HostelManagement.BAL.Contracts;
+﻿using AutoMapper;
+using HostelManagement.BAL.Contracts;
 using HostelManagement.DAL.Models;
+using HostelManagement.DAL.View_Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HostelManagement.API.Controllers
@@ -10,10 +12,13 @@ namespace HostelManagement.API.Controllers
     {
         private readonly ILogger<HostelController> _logger;
         private readonly IHostelManager _hm;
-        public HostelController(IHostelManager hm, ILogger<HostelController> logger)
+        private readonly IMapper _mapper;
+        
+        public HostelController(IHostelManager hm, ILogger<HostelController> logger, IMapper mapper)
         {
             _hm = hm; ;
             _logger = logger;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -21,10 +26,12 @@ namespace HostelManagement.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IEnumerable<Hostel>> GetAllHostels()
+        public async Task<IEnumerable<HostelVM>> GetAllHostels()
         {
             _logger.LogInformation("GetAllHostels method is called at " + DateTime.Now);
-            return await _hm.GetAllHostelsAsync();
+            IEnumerable<Hostel> hostels = await _hm.GetAllHostelsAsync();
+            var hvm = hostels.Select(hostels => _mapper.Map<HostelVM>(hostels));
+            return hvm;
         }
 
         /// <summary>
@@ -33,10 +40,12 @@ namespace HostelManagement.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public async Task<Hostel> GetHostel(int id)
+        public async Task<HostelVM> GetHostel(int id)
         {
             _logger.LogInformation("GetHostel method is called at " + DateTime.Now);
-            return await _hm.GetHostelAsync(id);
+            Hostel hostel = await _hm.GetHostelAsync(id);
+            var hvm = _mapper.Map<HostelVM>(hostel);
+            return hvm;
         }
 
         /// <summary>
@@ -45,19 +54,20 @@ namespace HostelManagement.API.Controllers
         /// <param name="hostel"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> AddHostel(Hostel hostel)
+        public async Task<IActionResult> AddHostel(HostelVM hvm)
          {
             _logger.LogInformation("AddHostel method is called at " + DateTime.Now);
             try
              {
-                 if (hostel == null)
+                 if (hvm == null)
                      return BadRequest();
                  else
                  {
+                    Hostel hostel = _mapper.Map<Hostel>(hvm);
                      if (await _hm.AddHostel(hostel))
                          return StatusCode(StatusCodes.Status201Created, "New hostel is created");
                      else
-                         return StatusCode(StatusCodes.Status400BadRequest, "Hostel is already available");
+                         return StatusCode(StatusCodes.Status400BadRequest, "Hostel already exists");
                  }
              }
              catch(Exception ex)
@@ -74,26 +84,30 @@ namespace HostelManagement.API.Controllers
         /// <param name="hostel"></param>
         /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateHostel(int id, [FromBody] Hostel hostel)
+        public async Task<IActionResult> UpdateHostel(int id, [FromBody] HostelVM hvm)
         {
             _logger.LogInformation("UpdateHostel method is called at " + DateTime.Now);
             try
             {
-                if (hostel == null)
+                if (hvm == null)
                     return BadRequest();
                 else
                 {
                     Hostel exHostel = await _hm.GetHostelAsync(id);
-                    if (exHostel != null)
+                    if (exHostel == null)
                     {
-                        // exHostel.HostelId = hostel.HostelId;
+                        return NotFound("Id does not exist");
+                    }
+                    else
+                    {
+                        /* exHostel.HostelId = hostel.HostelId;
                         exHostel.NoOfStudents = hostel.NoOfStudents;
                         exHostel.NoOfRooms = hostel.NoOfRooms;
-                        exHostel.NoOfAvailableRooms = hostel.NoOfAvailableRooms;
-                        _hm.UpdateHostel(exHostel);
+                        exHostel.NoOfAvailableRooms = hostel.NoOfAvailableRooms; */
+                        Hostel hostel = _mapper.Map<HostelVM, Hostel>(hvm, exHostel);
+                        _hm.UpdateHostel(hostel);
                         return Ok("Hostel is updated");
                     }
-                    return NotFound();
                 }
             }
             catch(Exception ex)
@@ -112,12 +126,19 @@ namespace HostelManagement.API.Controllers
         {
             try
             {
+                if (id == null)
+                {
+                    //Function part of controllerbase
+                    return BadRequest();
+                }
+                else
+                {
                     Hostel delHostel = await _hm.GetHostelAsync(id);
                     if (delHostel == null)
                     { return NotFound("ID does not exist"); }
                     _hm.DeleteHostel(delHostel);
                     return Ok("Hostel Deleted");
-               
+                }
             }
             catch (Exception ex)
             {
