@@ -2,6 +2,7 @@
 using HostelManagement.BAL.Contracts;
 using HostelManagement.DAL.Models;
 using HostelManagement.DAL.View_Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HostelManagement.API.Controllers
@@ -25,6 +26,7 @@ namespace HostelManagement.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [EnableCors("AllowOrigin")]
         public async Task<IEnumerable<StudentVM>> GetAllStudents()
         {
             _logger.LogInformation("GetAllStudents method is called at " + DateTime.Now);
