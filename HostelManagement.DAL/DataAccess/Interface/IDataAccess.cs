@@ -4,6 +4,7 @@ namespace HostelManagement.DAL.DataAccess.Interface
 {
     public interface IDataAccess
     {
+        IUserRepo User { get; }
         IHostelRepo Hostel { get; }
         IRoomRepo Room { get; }
         IStudentRepo Student { get; }
@@ -14,6 +15,7 @@ namespace HostelManagement.DAL.DataAccess.Interface
     }
 
     //Individual Model Repos
+    public interface IUserRepo : IRepo<User> { }
     public interface IHostelRepo : IRepo<Hostel> { }
     public interface IRoomRepo : IRepo<Room> { }
     public interface IStudentRepo : IRepo<Student> { }

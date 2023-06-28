@@ -8,6 +8,9 @@ namespace HostelManagement.API
     {
         public AutoMapperProfile()
         {
+            CreateMap<User, UserVM>();
+            CreateMap<UserVM, User>();
+
             CreateMap<Hostel, HostelVM>();
             CreateMap<HostelVM, Hostel>();
 

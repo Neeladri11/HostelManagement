@@ -10,6 +10,7 @@ namespace HostelManagement.DAL.DataAccess
         public DataAccess(ApplicationDbContext db)
         {
             _db = db;
+            User = new UserRepo(_db);
             Hostel = new HostelRepo(_db);
             Room = new RoomRepo(_db);
             Student = new StudentRepo(_db);
@@ -17,6 +18,8 @@ namespace HostelManagement.DAL.DataAccess
             Booking = new BookingRepo(_db);
             Payment = new PaymentRepo(_db);
         }
+
+        public IUserRepo User { get; private set; }
 
         public IHostelRepo Hostel { get; private set; }
 
@@ -33,6 +36,15 @@ namespace HostelManagement.DAL.DataAccess
         public void Save()
         {
             _db.SaveChangesAsync();
+        }
+    }
+
+    public class UserRepo : Repo<User>, IUserRepo
+    {
+        private readonly ApplicationDbContext _db;
+        public UserRepo(ApplicationDbContext db) : base(db)
+        {
+            _db = db;
         }
     }
 

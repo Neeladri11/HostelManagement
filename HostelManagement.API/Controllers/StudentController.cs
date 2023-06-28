@@ -2,8 +2,10 @@
 using HostelManagement.BAL.Contracts;
 using HostelManagement.DAL.Models;
 using HostelManagement.DAL.View_Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HostelManagement.API.Controllers
 {

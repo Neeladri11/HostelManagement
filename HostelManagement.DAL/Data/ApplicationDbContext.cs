@@ -47,6 +47,8 @@ namespace HostelManagement.DAL.Data
             modelBuilder.Entity<Payment>().Property(o => o.Amount).HasPrecision(15,2);
         }
 
+        public DbSet<User> Users { get; set; }
+
         public DbSet<Hostel> Hostels { get; set; }
 
         public DbSet<Room> Rooms { get; set; }
